@@ -78,6 +78,31 @@
             background-color: #003f7f;
         }
 
+        /* 状態による行番号のスタイル */
+        .row-index.green {
+        color: #fff;
+        background-color: #4caf50; /* 柔らかい緑 */
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 5px 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .row-index.red {
+            color: #fff;
+            background-color: #f44336; /* 柔らかい赤 */
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 5px 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .row-index.green:hover, .row-index.red:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
         /* スマホサイズでのスタイル調整 */
         @media (max-width: 600px) {
             th {
@@ -173,7 +198,7 @@
             const cell2 = newRow.insertCell(1); // 数字1
             const cell3 = newRow.insertCell(2); // 数字2
             const cell4 = newRow.insertCell(3); // 数字3
-            const cell5 = newRow.insertCell(4); // 数字4
+            const cell5 = newRow.insertCell(4); // 数字3
 
             // 行番号を付与
             cell1.textContent = table.rows.length - 1; // 最後の行を除いて番号付け
@@ -194,10 +219,23 @@
             // 各行の入力値を取得して合計を計算
             for (let i = 1; i < table.rows.length; i++) {
                 const row = table.rows[i];
-                sum1 += parseFloat(row.cells[1].querySelector("input").value || 0);
-                sum2 += parseFloat(row.cells[2].querySelector("input").value || 0);
-                sum3 += parseFloat(row.cells[3].querySelector("input").value || 0);
-                sum4 += parseFloat(row.cells[4].querySelector("input").value || 0);
+                const val1 = parseFloat(row.cells[1].querySelector("input").value || 0);
+                const val2 = parseFloat(row.cells[2].querySelector("input").value || 0);
+                const val3 = parseFloat(row.cells[3].querySelector("input").value || 0);
+                const val4 = parseFloat(row.cells[4].querySelector("input").value || 0);
+
+                sum1 += val1;
+                sum2 += val2;
+                sum3 += val3;
+                sum4 += val4;
+
+                // 行番号の色を変更
+                const rowIndexCell = row.cells[0];
+                if (val1 + val2 + val3 + val4 === 0) {
+                    rowIndexCell.className = "row-index green";
+                } else {
+                    rowIndexCell.className = "row-index red";
+                }
             }
 
             // 合計テーブルに反映
