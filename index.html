@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -36,8 +36,6 @@
         .button {
             display: block;
             margin: 10px auto;
-            padding: 15px 30px;
-            font-size: 16px;
             color: #fff;
             background-color: #007bff;
             border: none;
@@ -56,20 +54,29 @@
         .button:active {
             background-color: #003f7f;
         }
+
+        /* スマホサイズでの調整 */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.2rem; /* 見出しの文字を小さく */
+            }
+
+            .button {
+                font-size: 14px; /* ボタンの文字サイズを小さく */
+                padding: 10px 20px; /* ボタンのパディングを調整 */
+            }
+
+            .container {
+                padding: 15px; /* 全体の余白を少し減らす */
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>麻雀モード選択</h1>
-        <a href="#" class="button" onclick="selectMode('4人麻雀')">4人麻雀</a>
-        <a href="#" class="button" onclick="selectMode('3人麻雀')">3人麻雀</a>
+        <a href="https://smalltimecandystore.github.io/mahjong-byHanda/4ma" class="button" onclick="selectMode('4人麻雀')">4人麻雀</a>
+        <a href="https://smalltimecandystore.github.io/mahjong-byHanda/3ma" class="button" onclick="selectMode('3人麻雀')">3人麻雀</a>
     </div>
-
-    <script>
-        function selectMode(mode) {
-            alert(mode + 'が選択されました！');
-            // 必要に応じて、ここに遷移処理や他のロジックを追加してください。
-        }
-    </script>
 </body>
 </html>
