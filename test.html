@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>独自の数字キーボード</title>
+  <title>カスタムキーボード</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,10 +18,21 @@
       margin-bottom: 10px;
     }
     .keyboard {
+      display: none;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f0f0f0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .keyboard.active {
       display: grid;
       grid-template-columns: repeat(3, 60px);
       gap: 10px;
-      justify-content: center;
     }
     .key {
       width: 60px;
@@ -45,12 +56,25 @@
     .key.special:active {
       background-color: #E64A19;
     }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+    .overlay.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <h1>独自の数字キーボード</h1>
-  <input id="customInput" type="text" readonly placeholder="ここに入力されます">
-  <div class="keyboard">
+  <h1>独自キーボード付き入力</h1>
+  <input id="customInput" type="text" readonly placeholder="タップして入力">
+  <div class="overlay" id="overlay" onclick="hideKeyboard()"></div>
+  <div class="keyboard" id="customKeyboard">
     <!-- 数字キー -->
     <button class="key" onclick="appendValue('1')">1</button>
     <button class="key" onclick="appendValue('2')">2</button>
@@ -69,8 +93,26 @@
   </div>
   <script>
     const input = document.getElementById('customInput');
+    const keyboard = document.getElementById('customKeyboard');
+    const overlay = document.getElementById('overlay');
 
-    // ボタンで入力値を更新
+    // テキストボックスをクリックしたらキーボードを表示
+    input.addEventListener('focus', showKeyboard);
+
+    // キーボードを表示
+    function showKeyboard() {
+      keyboard.classList.add('active');
+      overlay.classList.add('active');
+    }
+
+    // キーボードを隠す
+    function hideKeyboard() {
+      keyboard.classList.remove('active');
+      overlay.classList.remove('active');
+      input.blur(); // テキストボックスのフォーカスを外す
+    }
+
+    // 入力値を更新
     function appendValue(value) {
       input.value += value;
     }
