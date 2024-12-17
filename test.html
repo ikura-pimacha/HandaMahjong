@@ -3,24 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>数字入力ボックス</title>
+  <title>独自の数字キーボード</title>
   <style>
-    input[type="number"] {
-      width: 200px;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
     }
-    input[type="number"]:focus {
-      border-color: #007BFF;
-      outline: none;
+    #customInput {
+      width: 200px;
+      height: 40px;
+      font-size: 18px;
+      text-align: right;
+      margin-bottom: 10px;
+    }
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      gap: 10px;
+      justify-content: center;
+    }
+    .key {
+      width: 60px;
+      height: 60px;
+      font-size: 20px;
+      text-align: center;
+      line-height: 60px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .key:active {
+      background-color: #0056b3;
+    }
+    .key.special {
+      background-color: #FF5722;
+    }
+    .key.special:active {
+      background-color: #E64A19;
     }
   </style>
 </head>
 <body>
-  <h1>数字を入力してください</h1>
-  <label for="numberInput">数字:</label>
-  <input id="numberInput" type="number" placeholder="数字を入力">
+  <h1>独自の数字キーボード</h1>
+  <input id="customInput" type="text" readonly placeholder="ここに入力されます">
+  <div class="keyboard">
+    <!-- 数字キー -->
+    <button class="key" onclick="appendValue('1')">1</button>
+    <button class="key" onclick="appendValue('2')">2</button>
+    <button class="key" onclick="appendValue('3')">3</button>
+    <button class="key" onclick="appendValue('4')">4</button>
+    <button class="key" onclick="appendValue('5')">5</button>
+    <button class="key" onclick="appendValue('6')">6</button>
+    <button class="key" onclick="appendValue('7')">7</button>
+    <button class="key" onclick="appendValue('8')">8</button>
+    <button class="key" onclick="appendValue('9')">9</button>
+    <button class="key special" onclick="appendValue('-')">-</button>
+    <button class="key" onclick="appendValue('0')">0</button>
+    <button class="key special" onclick="appendValue('+')">+</button>
+    <!-- 削除キー -->
+    <button class="key special" style="grid-column: span 3;" onclick="clearInput()">クリア</button>
+  </div>
+  <script>
+    const input = document.getElementById('customInput');
+
+    // ボタンで入力値を更新
+    function appendValue(value) {
+      input.value += value;
+    }
+
+    // 入力値をクリア
+    function clearInput() {
+      input.value = '';
+    }
+  </script>
 </body>
 </html>
