@@ -3,41 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>カスタムキーボード</title>
+  <title>符号変更機能付きカスタムキーボード</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
       text-align: center;
     }
-    #customInput {
-      width: 200px;
-      height: 40px;
-      font-size: 18px;
-      text-align: right;
-      margin-bottom: 10px;
+    #inputContainer {
+      margin: 20px;
+    }
+    .customInput {
+      width: 80%;
+      height: 50px;
+      font-size: 20px;
+      text-align: center;
+      margin: 10px auto;
+      display: block;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
     .keyboard {
       display: none;
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #f0f0f0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background-color: #f9f9f9;
+      border-top: 1px solid #ccc;
+      box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
       padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .keyboard.active {
       display: grid;
-      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: auto 1fr;
+      gap: 10px;
+    }
+    .ok-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      width: 100%;
+      height: 40px;
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .ok-button:active {
+      background-color: #45a049;
+    }
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
     }
     .key {
-      width: 60px;
+      width: 100%;
       height: 60px;
-      font-size: 20px;
+      font-size: 24px;
       text-align: center;
       line-height: 60px;
       background-color: #007BFF;
@@ -56,70 +83,79 @@
     .key.special:active {
       background-color: #E64A19;
     }
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-    }
-    .overlay.active {
-      display: block;
-    }
   </style>
 </head>
 <body>
-  <h1>独自キーボード付き入力</h1>
-  <input id="customInput" type="text" readonly placeholder="タップして入力">
-  <div class="overlay" id="overlay" onclick="hideKeyboard()"></div>
+  <h1>符号変更付きカスタムキーボード</h1>
+  <div id="inputContainer">
+    <input id="input1" class="customInput" type="text" readonly placeholder="入力ボックス 1">
+    <input id="input2" class="customInput" type="text" readonly placeholder="入力ボックス 2">
+  </div>
   <div class="keyboard" id="customKeyboard">
-    <!-- 数字キー -->
-    <button class="key" onclick="appendValue('1')">1</button>
-    <button class="key" onclick="appendValue('2')">2</button>
-    <button class="key" onclick="appendValue('3')">3</button>
-    <button class="key" onclick="appendValue('4')">4</button>
-    <button class="key" onclick="appendValue('5')">5</button>
-    <button class="key" onclick="appendValue('6')">6</button>
-    <button class="key" onclick="appendValue('7')">7</button>
-    <button class="key" onclick="appendValue('8')">8</button>
-    <button class="key" onclick="appendValue('9')">9</button>
-    <button class="key special" onclick="appendValue('-')">-</button>
-    <button class="key" onclick="appendValue('0')">0</button>
-    <button class="key special" onclick="appendValue('+')">+</button>
-    <!-- 削除キー -->
-    <button class="key special" style="grid-column: span 3;" onclick="clearInput()">クリア</button>
+    <button class="ok-button" onclick="hideKeyboard()">OK</button>
+    <div class="keys">
+      <!-- 数字キー -->
+      <button class="key" onclick="appendValue('1')">1</button>
+      <button class="key" onclick="appendValue('2')">2</button>
+      <button class="key" onclick="appendValue('3')">3</button>
+      <button class="key" onclick="appendValue('4')">4</button>
+      <button class="key" onclick="appendValue('5')">5</button>
+      <button class="key" onclick="appendValue('6')">6</button>
+      <button class="key" onclick="appendValue('7')">7</button>
+      <button class="key" onclick="appendValue('8')">8</button>
+      <button class="key" onclick="appendValue('9')">9</button>
+      <button class="key special" onclick="changeSign('-')">-</button>
+      <button class="key" onclick="appendValue('0')">0</button>
+      <button class="key special" onclick="changeSign('+')">+</button>
+    </div>
   </div>
   <script>
-    const input = document.getElementById('customInput');
     const keyboard = document.getElementById('customKeyboard');
-    const overlay = document.getElementById('overlay');
+    let activeInput = null; // 現在アクティブな入力フィールドを追跡
 
-    // テキストボックスをクリックしたらキーボードを表示
-    input.addEventListener('focus', showKeyboard);
+    // 各入力フィールドにフォーカスイベントを追加
+    document.querySelectorAll('.customInput').forEach(input => {
+      input.addEventListener('focus', (e) => {
+        activeInput = e.target; // フォーカスされたフィールドを保存
+        showKeyboard();
+      });
+    });
 
     // キーボードを表示
     function showKeyboard() {
       keyboard.classList.add('active');
-      overlay.classList.add('active');
     }
 
     // キーボードを隠す
     function hideKeyboard() {
       keyboard.classList.remove('active');
-      overlay.classList.remove('active');
-      input.blur(); // テキストボックスのフォーカスを外す
+      if (activeInput) activeInput.blur(); // フォーカスを解除
     }
 
     // 入力値を更新
     function appendValue(value) {
-      input.value += value;
+      if (activeInput) {
+        activeInput.value += value;
+      }
     }
 
-    // 入力値をクリア
-    function clearInput() {
-      input.value = '';
+    // 符号を変更する
+    function changeSign(sign) {
+      if (activeInput) {
+        const currentValue = activeInput.value.trim();
+        if (currentValue === '') return; // 空の場合は何もしない
+        if (sign === '-') {
+          // マイナスにする
+          activeInput.value = currentValue.startsWith('-')
+            ? currentValue // 既にマイナスならそのまま
+            : `-${currentValue}`;
+        } else if (sign === '+') {
+          // プラスにする
+          activeInput.value = currentValue.startsWith('-')
+            ? currentValue.slice(1) // マイナスを外す
+            : currentValue; // 既にプラスならそのまま
+        }
+      }
     }
   </script>
 </body>
