@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>符号変更機能付きカスタムキーボード</title>
+  <title>カスタムキーボード</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -36,29 +36,27 @@
       box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
       z-index: 1000;
       padding: 10px;
+      display: grid;
+      grid-template-rows: repeat(3, 1fr); /* 3行を均等に配置 */
+      gap: 0; /* 行間の隙間をなくす */
     }
     .keyboard.active {
       display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 10px;
-    }
-    .ok-button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      width: 100%;
-      height: 40px;
-      font-size: 18px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .ok-button:active {
-      background-color: #45a049;
     }
     .keys {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .special-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      
+    }
+    .last-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr; /* 左スペース, 0, 削除 */
       gap: 10px;
     }
     .key {
@@ -83,18 +81,46 @@
     .key.special:active {
       background-color: #E64A19;
     }
+    .key.delete {
+      background-color: #FF9800;
+    }
+    .key.delete:active {
+      background-color: #F57C00;
+    }
+    .space {
+      background-color: transparent;
+      border: none;
+      pointer-events: none;
+    }
+    .ok-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      width: 100%;
+      height: 60px;
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .ok-button:active {
+      background-color: #45a049;
+    }
   </style>
 </head>
 <body>
-  <h1>符号変更付きカスタムキーボード</h1>
+  <h1>カスタムキーボード</h1>
   <div id="inputContainer">
     <input id="input1" class="customInput" type="text" readonly placeholder="入力ボックス 1">
     <input id="input2" class="customInput" type="text" readonly placeholder="入力ボックス 2">
   </div>
   <div class="keyboard" id="customKeyboard">
-    <button class="ok-button" onclick="hideKeyboard()">OK</button>
+    <div class="special-row">
+        <button class="key special" onclick="changeSign('-')">-</button>
+        <button class="key special" onclick="changeSign('+')">+</button>
+        <button class="ok-button" onclick="hideKeyboard()">OK</button>
+      </div>
     <div class="keys">
-      <!-- 数字キー -->
       <button class="key" onclick="appendValue('1')">1</button>
       <button class="key" onclick="appendValue('2')">2</button>
       <button class="key" onclick="appendValue('3')">3</button>
@@ -104,9 +130,11 @@
       <button class="key" onclick="appendValue('7')">7</button>
       <button class="key" onclick="appendValue('8')">8</button>
       <button class="key" onclick="appendValue('9')">9</button>
-      <button class="key special" onclick="changeSign('-')">-</button>
+    </div>
+    <div class="last-row">
+      <div class="space"></div>
       <button class="key" onclick="appendValue('0')">0</button>
-      <button class="key special" onclick="changeSign('+')">+</button>
+      <button class="key delete" onclick="deleteLast()">←</button>
     </div>
   </div>
   <script>
@@ -155,6 +183,13 @@
             ? currentValue.slice(1) // マイナスを外す
             : currentValue; // 既にプラスならそのまま
         }
+      }
+    }
+
+    // 最後の文字を削除する
+    function deleteLast() {
+      if (activeInput) {
+        activeInput.value = activeInput.value.slice(0, -1);
       }
     }
   </script>
